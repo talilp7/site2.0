@@ -107,28 +107,29 @@
         margin-bottom: 10px;
       }
     }
+
     input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 4px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
 
-#mensagem-status {
-  font-weight: bold;
-}
+    #mensagem-status {
+      font-weight: bold;
+    }
 
-#mensagem-status.sucesso {
-  color: green;
-}
+    #mensagem-status.sucesso {
+      color: green;
+    }
 
-#mensagem-status.erro {
-  color: red;
-}
+    #mensagem-status.erro {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -190,11 +191,10 @@
       </p>
     </section>
 
-      <section>
+    <section>
       <h2>Onde assistir?</h2>
       <ul>
         <li><strong>Disney+</strong></li>
-        
       </ul>
     </section>
 
@@ -206,21 +206,27 @@
         <img src="https://s2.glbimg.com/zThgjFej_ofnvfHnJN2pJA58ziM=/smart/e.glbimg.com/og/ed/f/original/2017/07/07/screen_shot_2017-07-07_at_10.34.39.png" alt="Elenco reunido">
       </div>
     </section>
+
+    <!-- FORM NOVO -->
     <section id="contato">
-  <h2>Peça um filme</h2>
-  <form action="https://formsubmit.co/talita.muniz@escola.pr.gov.br" method="POST">
-    <label for="nome">Nome:</label><br>
-    <input type="text" id="nome" name="nome" required><br><br>
+      <h2>Peça um filme</h2>
+      <form id="form-contato" action="https://formsubmit.co/talita.muniz@escola.pr.gov.br" method="POST">
+        <input type="hidden" name="_next" value="https://seusite.com/obrigado.html">
+        <input type="hidden" name="_captcha" value="false">
 
-    <label for="email">E-mail:</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
 
-    <label for="mensagem">Filme solicitado:</label><br>
-    <textarea id="mensagem" name="mensagem" rows="5" required></textarea><br><br>
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" required>
 
-    <button class="btn" type="submit">Enviar</button>
-    <p id="mensagem-status" style="margin-top: 10px;"></p>
-</section>
+        <label for="mensagem">Filme solicitado:</label>
+        <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
+
+        <button class="btn" type="submit">Enviar</button>
+        <p id="mensagem-status" style="margin-top: 10px;"></p>
+      </form>
+    </section>
   </main>
 
   <footer>
@@ -228,53 +234,36 @@
   </footer>
 
   <script>
-    // Animação ao clicar nos botões de navegação
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener("click", function (e) {
+    // Validação antes do envio
+    document.getElementById("form-contato").addEventListener("submit", function (e) {
+      const nome = document.getElementById("nome");
+      const email = document.getElementById("email");
+      const mensagem = document.getElementById("mensagem");
+      const status = document.getElementById("mensagem-status");
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      status.textContent = "";
+      status.className = "";
+
+      if (!nome.value.trim() || !email.value.trim() || !mensagem.value.trim()) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute("href"));
-        if (target) {
-          target.scrollIntoView({ behavior: "smooth" });
-        }
-      });
+        status.textContent = "Por favor, preencha todos os campos.";
+        status.classList.add("erro");
+        return;
+      }
+
+      if (!emailRegex.test(email.value)) {
+        e.preventDefault();
+        status.textContent = "Por favor, insira um e-mail válido.";
+        status.classList.add("erro");
+        return;
+      }
+
+      status.textContent = "Enviando...";
+      status.classList.add("sucesso");
     });
-    // Validação e envio do formulário
-document.getElementById("form-contato").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const nome = document.getElementById("nome");
-  const email = document.getElementById("email");
-  const mensagem = document.getElementById("mensagem");
-  const status = document.getElementById("mensagem-status");
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // Limpar mensagens anteriores
-  status.textContent = "";
-  status.className = "";
-
-  // Validações
-  if (!nome.value.trim() || !email.value.trim() || !mensagem.value.trim()) {
-    status.textContent = "Por favor, preencha todos os campos.";
-    status.classList.add("erro");
-    return;
-  }
-
-  if (!emailRegex.test(email.value)) {
-    status.textContent = "Por favor, insira um e-mail válido.";
-    status.classList.add("erro");
-    return;
-  }
-
-  // Simula envio (poderia ser um fetch para backend)
-  status.textContent = "Mensagem enviada com sucesso!";
-  status.classList.add("sucesso");
-
-  // Limpa campos
-  nome.value = "";
-  email.value = "";
-  mensagem.value = "";
-});
   </script>
+
 </body>
 </html>
